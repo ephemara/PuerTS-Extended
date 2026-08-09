@@ -145,10 +145,14 @@ subMenu.AddMenuEntry('Scripts', tabEntry);
 // ---------------------------------------------------------------------------
 const toolbar = UE.ToolMenus.Get().FindMenu('LevelEditor.LevelEditorToolBar');
 
-const tbEntry = Menus.InitToolBarButton('PTSExToolbar', 'PTSEx', () => {
-    Core.Notify('PTSEx', 'Toolbar button clicked', 1);
-});
-toolbar.AddMenuEntry('PTSEx', tbEntry);
+if (toolbar) {
+    const tbEntry = Menus.InitToolBarButton('PTSExToolbar', 'PTSEx', () => {
+        Core.Notify('PTSEx', 'Toolbar button clicked', 1);
+    });
+    toolbar.AddMenuEntry('PTSEx', tbEntry);
+} else {
+    console.warn('[PTSEx] LevelEditor.LevelEditorToolBar menu not found in this engine version — toolbar disabled.');
+}
 
 const comboIcon = new cpp.FSlateIcon('EditorStyle', 'LevelEditor.WorldProperties', 'LevelEditor.WorldProperties.Small');
 const comboEntry = Menus.InitComboButton('PTSExCombo', undefined, (subMenu) => {

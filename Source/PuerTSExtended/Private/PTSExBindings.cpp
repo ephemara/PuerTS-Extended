@@ -275,7 +275,7 @@ struct PTS_Windows
 		return PTSEx::OpenWindow(InWidget, InTitle, InWidth, InHeight);
 	}
 
-	static int32 OpenSlate(PTSEx::FPTSExSlateWidget InWidget, const FString& InTitle, int32 InWidth, int32 InHeight)
+	static int32 OpenSlate(FPTSExSlateWidget InWidget, const FString& InTitle, int32 InWidth, int32 InHeight)
 	{
 		return PTSEx::OpenWindowSlate(InWidget, InTitle, InWidth, InHeight);
 	}
@@ -431,25 +431,25 @@ struct FAutoRegisterForPTSEx
 			.Function("Remove", MakeFunction(&PTS_Details::Remove))
 			.Register();
 
-		puerts::DefineClass<PTSEx::FPTSExSlateWidget>()
-			.Function("VerticalBox", MakeFunction(&PTSEx::FPTSExSlateWidget::VerticalBox))
-			.Function("HorizontalBox", MakeFunction(&PTSEx::FPTSExSlateWidget::HorizontalBox))
-			.Function("ScrollBox", MakeFunction(&PTSEx::FPTSExSlateWidget::ScrollBox))
-			.Function("Border", MakeFunction(&PTSEx::FPTSExSlateWidget::Border))
-			.Function("Button", MakeFunction(&PTSEx::FPTSExSlateWidget::Button))
-			.Function("CheckBox", MakeFunction(&PTSEx::FPTSExSlateWidget::CheckBox))
-			.Function("TextBlock", MakeFunction(&PTSEx::FPTSExSlateWidget::TextBlock))
-			.Function("EditableTextBox", MakeFunction(&PTSEx::FPTSExSlateWidget::EditableTextBox))
-			.Function("Image", MakeFunction(&PTSEx::FPTSExSlateWidget::Image))
-			.Function("Spacer", MakeFunction(&PTSEx::FPTSExSlateWidget::Spacer))
-			.Function("Splitter", MakeFunction(&PTSEx::FPTSExSlateWidget::Splitter))
-			.Method("Add", MakeFunction(&PTSEx::FPTSExSlateWidget::Add))
-			.Method("SetText", MakeFunction(&PTSEx::FPTSExSlateWidget::SetText))
-			.Method("SetFontSize", MakeFunction(&PTSEx::FPTSExSlateWidget::SetFontSize))
-			.Method("SetColor", MakeFunction(&PTSEx::FPTSExSlateWidget::SetColor))
-			.Method("SetPadding", MakeFunction(&PTSEx::FPTSExSlateWidget::SetPadding))
-			.Method("SetVisibility", MakeFunction(&PTSEx::FPTSExSlateWidget::SetVisibility))
-			.Method("Clear", MakeFunction(&PTSEx::FPTSExSlateWidget::Clear))
+		puerts::DefineClass<FPTSExSlateWidget>()
+			.Function("VerticalBox", MakeFunction(&FPTSExSlateWidget::VerticalBox))
+			.Function("HorizontalBox", MakeFunction(&FPTSExSlateWidget::HorizontalBox))
+			.Function("ScrollBox", MakeFunction(&FPTSExSlateWidget::ScrollBox))
+			.Function("Border", MakeFunction(&FPTSExSlateWidget::Border))
+			.Function("Button", MakeFunction(&FPTSExSlateWidget::Button))
+			.Function("CheckBox", MakeFunction(&FPTSExSlateWidget::CheckBox))
+			.Function("TextBlock", MakeFunction(&FPTSExSlateWidget::TextBlock))
+			.Function("EditableTextBox", MakeFunction(&FPTSExSlateWidget::EditableTextBox))
+			.Function("Image", MakeFunction(&FPTSExSlateWidget::Image))
+			.Function("Spacer", MakeFunction(&FPTSExSlateWidget::Spacer))
+			.Function("Splitter", MakeFunction(&FPTSExSlateWidget::Splitter))
+			.Method("Add", MakeFunction(&FPTSExSlateWidget::Add))
+			.Method("SetText", MakeFunction(&FPTSExSlateWidget::SetText))
+			.Method("SetFontSize", MakeFunction(&FPTSExSlateWidget::SetFontSize))
+			.Method("SetColor", MakeFunction(&FPTSExSlateWidget::SetColor))
+			.Method("SetPadding", MakeFunction(&FPTSExSlateWidget::SetPadding))
+			.Method("SetVisibility", MakeFunction(&FPTSExSlateWidget::SetVisibility))
+			.Method("Clear", MakeFunction(&FPTSExSlateWidget::Clear))
 			.Register();
 	}
 };

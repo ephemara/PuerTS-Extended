@@ -11,8 +11,6 @@
 class UUserWidget;
 class SWidget;
 
-namespace PTSEx
-{
 enum class EPTSExSlateType
 {
 	VerticalBox,
@@ -32,6 +30,8 @@ enum class EPTSExSlateType
 /**
  * A C++ wrapper around Slate SWidget.
  * Allows declarative Slate layout creation directly from TypeScript/JavaScript.
+ * GLOBAL namespace on purpose: the PuerTS typings generator does not support
+ * namespaced C++ types (it would emit `PTSEx::FPTSExSlateWidget` = invalid TS).
  */
 class FPTSExSlateWidget
 {
@@ -66,13 +66,11 @@ public:
 	FPTSExSlateWidget Clear();
 };
 
-} // namespace PTSEx
-
 // PuerTS bindings: ScriptTypeName + pointer + by-value converters (needed by
 // every TU that converts FPTSExSlateWidget to/from JS — factories return by
 // value and builder methods take const refs). MUST be at global scope.
-UsingCppType(PTSEx::FPTSExSlateWidget);
-__DefCDataConverter(PTSEx::FPTSExSlateWidget);
+UsingCppType(FPTSExSlateWidget);
+__DefCDataConverter(FPTSExSlateWidget);
 
 namespace PTSEx
 {

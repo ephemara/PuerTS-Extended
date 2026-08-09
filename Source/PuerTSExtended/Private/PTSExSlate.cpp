@@ -171,9 +171,12 @@ private:
 
 TSet<FName> GDetailClasses;
 } // namespace
+} // namespace PTSEx
 
 // ---------------------------------------------------------------------------
 // Slate widget wrapper (declarative Slate from TS)
+// Class is GLOBAL scope (PuerTS typings generator limitation) — its members
+// must be defined outside the PTSEx namespace.
 // ---------------------------------------------------------------------------
 FPTSExSlateWidget FPTSExSlateWidget::VerticalBox()
 {
@@ -422,6 +425,8 @@ FPTSExSlateWidget FPTSExSlateWidget::Clear()
 	return *this;
 }
 
+namespace PTSEx
+{
 // ---------------------------------------------------------------------------
 // Windows
 // ---------------------------------------------------------------------------

@@ -10,11 +10,10 @@
 #include "V8Utils.h"         // FV8Utils helpers
 
 class UUserWidget;
+class FPTSExSlateWidget;
 
 namespace PTSEx
 {
-class FPTSExSlateWidget;
-
 /**
  * RAII scope that enters the isolate + context of a stored TS function so it
  * can be invoked safely from any game-thread call site (menu callbacks,
