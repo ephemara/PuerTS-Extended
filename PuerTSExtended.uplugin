@@ -1,0 +1,30 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "PuerTSExtended",
+	"Description": "Scriptable Unreal editor tooling on PuerTS: TypeScript menus, toolbar buttons, context menus, console commands, Slate windows hosting UMG, nomad tabs, detail customizations, notifications and hot reload — all swappable between projects.",
+	"Category": "Scripting",
+	"CreatedBy": "Template_God",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "PuerTSExtended",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Puerts",
+			"Enabled": true
+		}
+	]
+}
