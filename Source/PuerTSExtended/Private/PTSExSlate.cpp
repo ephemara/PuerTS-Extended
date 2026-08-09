@@ -10,6 +10,7 @@
 #include "Framework/Application/SlateApplication.h"
 #include "Framework/Docking/TabManager.h"
 #include "Framework/Notifications/NotificationManager.h"
+#include "Framework/SlateDelegates.h" // FOnClicked etc.
 #include "IDetailCustomization.h"
 #include "Misc/MessageDialog.h"
 #include "PropertyEditorModule.h"
@@ -197,7 +198,7 @@ FPTSExSlateWidget FPTSExSlateWidget::Border()
 FPTSExSlateWidget FPTSExSlateWidget::Button(const FString& InLabel, puerts::Function InClickCb)
 {
 	puerts::Function ClickCb = InClickCb;
-	SButton::FOnClicked Delegate = SButton::FOnClicked::CreateLambda([ClickCb]()
+	FOnClicked Delegate = FOnClicked::CreateLambda([ClickCb]()
 	{
 		if (ClickCb.Isolate && !ClickCb.GObject.IsEmpty())
 		{
@@ -215,7 +216,7 @@ FPTSExSlateWidget FPTSExSlateWidget::Button(const FString& InLabel, puerts::Func
 FPTSExSlateWidget FPTSExSlateWidget::CheckBox(bool bChecked, puerts::Function InCheckStateChangedCb)
 {
 	puerts::Function CheckCb = InCheckStateChangedCb;
-	SCheckBox::FOnCheckStateChanged Delegate = SCheckBox::FOnCheckStateChanged::CreateLambda([CheckCb](ECheckBoxState NewState)
+	FOnCheckStateChanged Delegate = FOnCheckStateChanged::CreateLambda([CheckCb](ECheckBoxState NewState)
 	{
 		if (CheckCb.Isolate && !CheckCb.GObject.IsEmpty())
 		{
@@ -237,7 +238,7 @@ FPTSExSlateWidget FPTSExSlateWidget::TextBlock(const FString& InText)
 FPTSExSlateWidget FPTSExSlateWidget::EditableTextBox(const FString& InText, puerts::Function InOnTextChangedCb)
 {
 	puerts::Function TextChangedCb = InOnTextChangedCb;
-	SEditableTextBox::FOnTextChanged Delegate = SEditableTextBox::FOnTextChanged::CreateLambda([TextChangedCb](const FText& NewText)
+	FOnTextChanged Delegate = FOnTextChanged::CreateLambda([TextChangedCb](const FText& NewText)
 	{
 		if (TextChangedCb.Isolate && !TextChangedCb.GObject.IsEmpty())
 		{
@@ -282,27 +283,27 @@ FPTSExSlateWidget FPTSExSlateWidget::Add(const FPTSExSlateWidget& Child, float P
 
 	if (Type == EPTSExSlateType::VerticalBox)
 	{
-		auto& Slot = static_cast<SVerticalBox*>(Widget.Get())->AddSlot();
+		auto Slot = static_cast<SVerticalBox*>(Widget.Get())->AddSlot();
 		Slot.Padding(Margin).HAlign(HAlignEnum).VAlign(VAlignEnum);
 		if (Fill > 0.0f) Slot.FillHeight(Fill); else Slot.AutoHeight();
 		Slot[Child.Widget.ToSharedRef()];
 	}
 	else if (Type == EPTSExSlateType::HorizontalBox)
 	{
-		auto& Slot = static_cast<SHorizontalBox*>(Widget.Get())->AddSlot();
+		auto Slot = static_cast<SHorizontalBox*>(Widget.Get())->AddSlot();
 		Slot.Padding(Margin).HAlign(HAlignEnum).VAlign(VAlignEnum);
 		if (Fill > 0.0f) Slot.FillWidth(Fill); else Slot.AutoWidth();
 		Slot[Child.Widget.ToSharedRef()];
 	}
 	else if (Type == EPTSExSlateType::ScrollBox)
 	{
-		auto& Slot = static_cast<SScrollBox*>(Widget.Get())->AddSlot();
+		auto Slot = static_cast<SScrollBox*>(Widget.Get())->AddSlot();
 		Slot.Padding(Margin).HAlign(HAlignEnum).VAlign(VAlignEnum);
 		Slot[Child.Widget.ToSharedRef()];
 	}
 	else if (Type == EPTSExSlateType::Splitter)
 	{
-		auto& Slot = static_cast<SSplitter*>(Widget.Get())->AddSlot();
+		auto Slot = static_cast<SSplitter*>(Widget.Get())->AddSlot();
 		if (Fill > 0.0f) Slot.Value(Fill);
 		Slot[Child.Widget.ToSharedRef()];
 	}
@@ -375,10 +376,22 @@ FPTSExSlateWidget FPTSExSlateWidget::SetPadding(float InPadding)
 
 FPTSExSlateWidget FPTSExSlateWidget::SetVisibility(int32 InVisibility)
 {
-	if (Widget.IsValid())
+	if (!Widget.IsValid())
 	{
-		Widget->SetVisibility((EVisibility)InVisibility);
+		return *this;
 	}
+
+	EVisibility NewVisibility = EVisibility::Visible;
+	switch (InVisibility)
+	{
+	case 1: NewVisibility = EVisibility::Collapsed; break;
+	case 2: NewVisibility = EVisibility::Hidden; break;
+	case 3: NewVisibility = EVisibility::HitTestInvisible; break;
+	case 4: NewVisibility = EVisibility::SelfHitTestInvisible; break;
+	default: break; // 0 = Visible
+	}
+
+	Widget->SetVisibility(NewVisibility);
 	return *this;
 }
 

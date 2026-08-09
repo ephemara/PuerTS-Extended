@@ -20,6 +20,7 @@ inside the plugin or inside their own plugins, and they just work.
 | `cpp.PTS_Windows` | editor sub-windows hosting **TS-built UMG widgets** (reuses your runtime UMG skills) |
 | `cpp.PTS_Tabs` | nomad workspace tabs hosting TS UMG widgets |
 | `cpp.PTS_Details` | detail-panel customizations rendered from TS UMG rows |
+| `cpp.FPTSExSlateWidget` | **native Slate DSL from TS** — `VerticalBox()`/`HorizontalBox()`/`ScrollBox()`/`Border()`/`Button()`/`CheckBox()`/`TextBlock()`/`EditableTextBox()`/`Image()`/`Spacer()`/`Splitter()` + chainable `.Add()`/`.SetText()`/`.SetFontSize()`/`.SetColor()`/`.SetPadding()`/`.SetVisibility()`/`.Clear()`. Host it via `PTS_Windows.OpenSlate()`, `PTS_Tabs.RegisterSlate()`, `PTS_Details.AddSlate()` |
 
 Plus `UE.*` reflection — the entire engine/editor API is callable from the env (e.g.
 `UE.ToolMenus.Get().FindMenu(...)`, asset APIs, editor subsystems).

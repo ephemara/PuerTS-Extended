@@ -198,7 +198,7 @@ Tabs.Register('PTSExDemoTab', 'PTSEx Demo', () => {
 // ---------------------------------------------------------------------------
 // Native Slate (no UMG) demos — cpp.PTSEx_SlateWidget wrappers
 // ---------------------------------------------------------------------------
-const SW = cpp.PTSEx_SlateWidget;
+const SW = cpp.FPTSExSlateWidget;
 
 function buildSlatePanel() {
     // A vertical box with a header, a button, a checkbox and an editable text box.

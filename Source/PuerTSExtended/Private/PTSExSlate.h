@@ -66,6 +66,16 @@ public:
 	FPTSExSlateWidget Clear();
 };
 
+} // namespace PTSEx
+
+// PuerTS bindings: ScriptTypeName + pointer + by-value converters (needed by
+// every TU that converts FPTSExSlateWidget to/from JS — factories return by
+// value and builder methods take const refs). MUST be at global scope.
+UsingCppType(PTSEx::FPTSExSlateWidget);
+__DefCDataConverter(PTSEx::FPTSExSlateWidget);
+
+namespace PTSEx
+{
 // ---- Windows (editor sub-windows hosting TS-built UMG widgets) ----
 /** Open a window hosting a TS-built UUserWidget. Returns a window id (0 = failure). */
 int32 OpenWindow(UUserWidget* InWidget, const FString& InTitle, int32 InWidth, int32 InHeight);

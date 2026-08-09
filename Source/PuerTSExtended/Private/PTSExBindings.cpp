@@ -356,7 +356,7 @@ UsingCppType(PTS_Console);
 UsingCppType(PTS_Windows);
 UsingCppType(PTS_Tabs);
 UsingCppType(PTS_Details);
-UsingCppType(PTSEx::FPTSExSlateWidget);
+UsingUStruct(FLinearColor);
 
 struct FAutoRegisterForPTSEx
 {

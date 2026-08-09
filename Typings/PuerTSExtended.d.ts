@@ -94,7 +94,7 @@ declare namespace cpp {
     }
 
     // ------------------------------------------------------------------
-    // Editor windows hosting TS UMG
+    // Editor windows hosting TS UMG or native Slate
     // ------------------------------------------------------------------
     namespace PTS_Windows {
         /**
@@ -104,13 +104,15 @@ declare namespace cpp {
          * Returns a window id (0 = failure).
          */
         function Open(widget: UE.UserWidget, title: string, width: number, height: number): number;
+        /** Open a window hosting a native Slate widget. Returns a window id (0 = failure). */
+        function OpenSlate(widget: FPTSExSlateWidget, title: string, width: number, height: number): number;
         function Close(id: number): void;
         function CloseAll(): void;
         function IsOpen(id: number): boolean;
     }
 
     // ------------------------------------------------------------------
-    // Nomad workspace tabs hosting TS UMG
+    // Nomad workspace tabs hosting TS UMG or native Slate
     // ------------------------------------------------------------------
     namespace PTS_Tabs {
         /**
@@ -118,6 +120,8 @@ declare namespace cpp {
          * a UUserWidget. iconStyle/iconName are FAppStyle brush names ('' = default).
          */
         function Register(tabId: string, title: string, spawnCb: () => UE.UserWidget, iconStyle?: string, iconName?: string): void;
+        /** Register a workspace tab hosting native Slate. */
+        function RegisterSlate(tabId: string, title: string, spawnCb: () => FPTSExSlateWidget, iconStyle?: string, iconName?: string): void;
         function Unregister(tabId: string): void;
         /** Open/focus the tab. */
         function Open(tabId: string): void;
@@ -134,56 +138,36 @@ declare namespace cpp {
          */
         function Add(classObj: UE.Class, cb: (objects: UE.Object[]) => Array<{ Label: string; Widget: UE.UserWidget }>): void;
         /** Same as Add but rows host native Slate widgets instead of UMG. */
-        function AddSlate(classObj: UE.Class, cb: (objects: UE.Object[]) => Array<{ Label: string; Widget: PTSEx_SlateWidget }>): void;
+        function AddSlate(classObj: UE.Class, cb: (objects: UE.Object[]) => Array<{ Label: string; Widget: FPTSExSlateWidget }>): void;
         function Remove(classObj: UE.Class): void;
     }
 
     // ------------------------------------------------------------------
     // Native Slate widget builder (declarative Slate from TS, no UMG)
     // ------------------------------------------------------------------
-    interface PTSEx_SlateWidget {
+    interface FPTSExSlateWidget {
         // Factories
-        VerticalBox(): PTSEx_SlateWidget;
-        HorizontalBox(): PTSEx_SlateWidget;
-        ScrollBox(): PTSEx_SlateWidget;
-        Border(): PTSEx_SlateWidget;
-        Button(label: string, onClick: () => void): PTSEx_SlateWidget;
-        CheckBox(checked: boolean, onCheckStateChanged: (state: number) => void): PTSEx_SlateWidget;
-        TextBlock(text: string): PTSEx_SlateWidget;
-        EditableTextBox(text: string, onTextChanged: (text: string) => void): PTSEx_SlateWidget;
-        Image(styleSet: string, styleName: string): PTSEx_SlateWidget;
-        Spacer(width: number, height: number): PTSEx_SlateWidget;
-        Splitter(vertical: boolean): PTSEx_SlateWidget;
+        VerticalBox(): FPTSExSlateWidget;
+        HorizontalBox(): FPTSExSlateWidget;
+        ScrollBox(): FPTSExSlateWidget;
+        Border(): FPTSExSlateWidget;
+        Button(label: string, onClick: () => void): FPTSExSlateWidget;
+        CheckBox(checked: boolean, onCheckStateChanged: (state: number) => void): FPTSExSlateWidget;
+        TextBlock(text: string): FPTSExSlateWidget;
+        EditableTextBox(text: string, onTextChanged: (text: string) => void): FPTSExSlateWidget;
+        Image(styleSet: string, styleName: string): FPTSExSlateWidget;
+        Spacer(width: number, height: number): FPTSExSlateWidget;
+        Splitter(vertical: boolean): FPTSExSlateWidget;
 
         // Builder methods (chainable)
         /** Add a child. Padding = margin, Fill = fill size (0 = auto), HAlign/VAlign = 0 Fill,1 Left,2 Center,3 Right / 0 Fill,1 Top,2 Center,3 Bottom */
-        Add(child: PTSEx_SlateWidget, padding?: number, fill?: number, hAlign?: number, vAlign?: number): PTSEx_SlateWidget;
-        SetText(text: string): PTSEx_SlateWidget;
-        SetFontSize(size: number): PTSEx_SlateWidget;
-        SetColor(color: UE.LinearColor): PTSEx_SlateWidget;
-        SetPadding(padding: number): PTSEx_SlateWidget;
+        Add(child: FPTSExSlateWidget, padding?: number, fill?: number, hAlign?: number, vAlign?: number): FPTSExSlateWidget;
+        SetText(text: string): FPTSExSlateWidget;
+        SetFontSize(size: number): FPTSExSlateWidget;
+        SetColor(color: UE.LinearColor): FPTSExSlateWidget;
+        SetPadding(padding: number): FPTSExSlateWidget;
         /** 0=Visible 1=Collapsed 2=Hidden 3=HitTestInvisible 4=SelfHitTestInvisible */
-        SetVisibility(visibility: number): PTSEx_SlateWidget;
-        Clear(): PTSEx_SlateWidget;
-    }
-
-    namespace PTS_Windows {
-        /** Open a window hosting a TS-built UUserWidget. Returns a window id (0 = failure). */
-        function Open(widget: UE.UserWidget, title: string, width: number, height: number): number;
-        /** Open a window hosting a native Slate widget. Returns a window id (0 = failure). */
-        function OpenSlate(widget: PTSEx_SlateWidget, title: string, width: number, height: number): number;
-        function Close(id: number): void;
-        function CloseAll(): void;
-        function IsOpen(id: number): boolean;
-    }
-
-    namespace PTS_Tabs {
-        /** Register a workspace tab hosting TS UMG. */
-        function Register(tabId: string, title: string, spawnCb: () => UE.UserWidget, iconStyle?: string, iconName?: string): void;
-        /** Register a workspace tab hosting native Slate. */
-        function RegisterSlate(tabId: string, title: string, spawnCb: () => PTSEx_SlateWidget, iconStyle?: string, iconName?: string): void;
-        function Unregister(tabId: string): void;
-        /** Open/focus the tab. */
-        function Open(tabId: string): void;
+        SetVisibility(visibility: number): FPTSExSlateWidget;
+        Clear(): FPTSExSlateWidget;
     }
 }
