@@ -24,6 +24,11 @@ enum class EPTSExSlateType
 	Image,
 	Spacer,
 	Splitter,
+	Slider,
+	ProgressBar,
+	ComboBox,
+	Separator,
+	ColorBlock,
 	Leaf
 };
 
@@ -38,6 +43,8 @@ class FPTSExSlateWidget
 public:
 	TSharedPtr<SWidget> Widget;
 	EPTSExSlateType Type = EPTSExSlateType::Leaf;
+	/** Lifetime anchor for widget-owned data (e.g. combo options array). */
+	TSharedPtr<void> UserData;
 
 	FPTSExSlateWidget() = default;
 	FPTSExSlateWidget(TSharedPtr<SWidget> InWidget, EPTSExSlateType InType)
@@ -55,6 +62,11 @@ public:
 	static FPTSExSlateWidget Image(const FName& InStyleSet, const FName& InStyleName);
 	static FPTSExSlateWidget Spacer(float InWidth, float InHeight);
 	static FPTSExSlateWidget Splitter(bool bVertical);
+	static FPTSExSlateWidget Slider(float InMin, float InMax, float InValue, puerts::Function InValueChangedCb);
+	static FPTSExSlateWidget ProgressBar(float InPercent);
+	static FPTSExSlateWidget ComboBox(const FString& InItemsCsv, int32 InSelectedIndex, puerts::Function InSelectionChangedCb);
+	static FPTSExSlateWidget Separator();
+	static FPTSExSlateWidget ColorBlock(const FLinearColor& InColor);
 
 	// --- Builder methods (chainable) ---
 	FPTSExSlateWidget Add(const FPTSExSlateWidget& Child, float Padding = 0.0f, float Fill = 0.0f, int32 HAlign = 0, int32 VAlign = 0);
@@ -63,6 +75,7 @@ public:
 	FPTSExSlateWidget SetColor(const FLinearColor& InColor);
 	FPTSExSlateWidget SetPadding(float InPadding);
 	FPTSExSlateWidget SetVisibility(int32 InVisibility);
+	FPTSExSlateWidget SetValue(float InValue);
 	FPTSExSlateWidget Clear();
 };
 

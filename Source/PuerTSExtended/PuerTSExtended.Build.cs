@@ -21,6 +21,8 @@ public class PuerTSExtended : ModuleRules
 			"ApplicationCore",
 			"ContentBrowserData",
 			"DeveloperSettings",
+			"InputCore",
+			"InputCore",                // EKeys statics used by Slate widgets (SListView/SComboBox)
 			"JsEnv",                    // PuerTS
 			"LevelEditor",
 			"Projects",                 // IPluginManager (plugin:// script scheme)

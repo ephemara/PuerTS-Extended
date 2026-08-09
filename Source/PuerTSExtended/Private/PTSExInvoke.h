@@ -54,6 +54,9 @@ bool InvokeWithMenuContext(const puerts::Function& InFunc, const FToolMenuContex
 /** Invoke with an int32 value. */
 bool InvokeWithInt(const puerts::Function& InFunc, int32 InVal);
 
+/** Invoke with a float value. */
+bool InvokeWithFloat(const puerts::Function& InFunc, float InVal);
+
 /** Invoke with a string value. */
 bool InvokeWithString(const puerts::Function& InFunc, const FString& InStr);
 

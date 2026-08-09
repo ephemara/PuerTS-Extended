@@ -24,7 +24,13 @@
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SEditableTextBox.h"
 #include "Widgets/Input/SCheckBox.h"
+#include "Widgets/Input/SSlider.h"
+#include "Widgets/Input/SComboBox.h"
+#include "Widgets/Views/SListView.h" // TListTypeTraits for SComboBox
 #include "Widgets/Images/SImage.h"
+#include "Widgets/Notifications/SProgressBar.h"
+#include "Widgets/Layout/SSeparator.h"
+#include "Widgets/Colors/SColorBlock.h"
 #include "Widgets/Notifications/SNotificationList.h" // FNotificationInfo definition
 #include "Widgets/SNullWidget.h"
 #include "Widgets/SWindow.h"
@@ -273,6 +279,88 @@ FPTSExSlateWidget FPTSExSlateWidget::Splitter(bool bVertical)
 	);
 }
 
+FPTSExSlateWidget FPTSExSlateWidget::Slider(float InMin, float InMax, float InValue, puerts::Function InValueChangedCb)
+{
+	puerts::Function Cb = InValueChangedCb;
+	FOnFloatValueChanged Delegate = FOnFloatValueChanged::CreateLambda([Cb](float NewValue)
+	{
+		if (Cb.Isolate && !Cb.GObject.IsEmpty())
+		{
+			PTSEx::InvokeWithFloat(Cb, NewValue);
+		}
+	});
+
+	return FPTSExSlateWidget(
+		SNew(SSlider).Value(InValue).OnValueChanged(Delegate),
+		EPTSExSlateType::Slider
+	);
+}
+
+FPTSExSlateWidget FPTSExSlateWidget::ProgressBar(float InPercent)
+{
+	return FPTSExSlateWidget(
+		SNew(SProgressBar).Percent(InPercent),
+		EPTSExSlateType::ProgressBar
+	);
+}
+
+FPTSExSlateWidget FPTSExSlateWidget::ComboBox(const FString& InItemsCsv, int32 InSelectedIndex, puerts::Function InSelectionChangedCb)
+{
+	puerts::Function Cb = InSelectionChangedCb;
+
+	// PuerTS has no TArray<FString> converter — items arrive as a comma-joined string.
+	// SComboBox items must be pointer-ish types (TListTypeTraits), so wrap in TSharedPtr.
+	TArray<FString> RawItems;
+	InItemsCsv.ParseIntoArray(RawItems, TEXT(","), true);
+
+	// MakeShared returns TSharedRef; .Get() would be a reference — OptionsSource wants a pointer.
+	TSharedPtr<TArray<TSharedPtr<FString>>> Options = MakeShared<TArray<TSharedPtr<FString>>>();
+	for (const FString& Item : RawItems)
+	{
+		Options->Add(MakeShared<FString>(Item));
+	}
+
+	TSharedPtr<FString> Initial = Options->IsValidIndex(InSelectedIndex) ? (*Options)[InSelectedIndex] : nullptr;
+
+	SComboBox<TSharedPtr<FString>>::FOnGenerateWidget GenerateWidget = SComboBox<TSharedPtr<FString>>::FOnGenerateWidget::CreateLambda(
+		[](TSharedPtr<FString> Item)
+		{
+			return SNew(STextBlock).Text(FText::FromString(Item ? *Item : FString()));
+		});
+
+	SComboBox<TSharedPtr<FString>>::FOnSelectionChanged SelectionChanged = SComboBox<TSharedPtr<FString>>::FOnSelectionChanged::CreateLambda(
+		[Cb](TSharedPtr<FString> Selected, ESelectInfo::Type /*SelectInfo*/)
+		{
+			if (Cb.Isolate && !Cb.GObject.IsEmpty() && Selected.IsValid())
+			{
+				PTSEx::InvokeWithString(Cb, *Selected);
+			}
+		});
+
+	const TArray<TSharedPtr<FString>>* OptionsPtr = Options.Get();
+
+	FPTSExSlateWidget W(
+		SNew(SComboBox<TSharedPtr<FString>>)
+			.OptionsSource(OptionsPtr)
+			.InitiallySelectedItem(Initial)
+			.OnGenerateWidget(GenerateWidget)
+			.OnSelectionChanged(SelectionChanged),
+		EPTSExSlateType::ComboBox
+	);
+	W.UserData = Options; // keep the options array alive as long as the widget lives
+	return W;
+}
+
+FPTSExSlateWidget FPTSExSlateWidget::Separator()
+{
+	return FPTSExSlateWidget(SNew(SSeparator), EPTSExSlateType::Leaf);
+}
+
+FPTSExSlateWidget FPTSExSlateWidget::ColorBlock(const FLinearColor& InColor)
+{
+	return FPTSExSlateWidget(SNew(SColorBlock).Color(InColor), EPTSExSlateType::Leaf);
+}
+
 FPTSExSlateWidget FPTSExSlateWidget::Add(const FPTSExSlateWidget& Child, float Padding, float Fill, int32 HAlign, int32 VAlign)
 {
 	if (!Widget.IsValid() || !Child.Widget.IsValid())
@@ -373,6 +461,19 @@ FPTSExSlateWidget FPTSExSlateWidget::SetPadding(float InPadding)
 	else if (Type == EPTSExSlateType::Button)
 	{
 		static_cast<SButton*>(Widget.Get())->SetContentPadding(FMargin(InPadding));
+	}
+	return *this;
+}
+
+FPTSExSlateWidget FPTSExSlateWidget::SetValue(float InValue)
+{
+	if (Type == EPTSExSlateType::Slider)
+	{
+		static_cast<SSlider*>(Widget.Get())->SetValue(InValue);
+	}
+	else if (Type == EPTSExSlateType::ProgressBar)
+	{
+		static_cast<SProgressBar*>(Widget.Get())->SetPercent(InValue);
 	}
 	return *this;
 }

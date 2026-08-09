@@ -154,15 +154,17 @@ if (toolbar) {
     console.warn('[PTSEx] LevelEditor.LevelEditorToolBar menu not found in this engine version — toolbar disabled.');
 }
 
-const comboIcon = new cpp.FSlateIcon('EditorStyle', 'LevelEditor.WorldProperties', 'LevelEditor.WorldProperties.Small');
-const comboEntry = Menus.InitComboButton('PTSExCombo', undefined, (subMenu) => {
-    if (!subMenu) return;
-    const item = Menus.InitMenuEntry('PTSExComboItem', 'Combo Item', 'Nested entry', () => {
-        console.log('[PTSEx] combo item clicked');
-    });
-    subMenu.AddMenuEntry('PTSExCombo', item);
-}, 'PTSEx', 'PTSEx combo', comboIcon);
-toolbar.AddMenuEntry('PTSEx', comboEntry);
+if (toolbar) {
+    const comboIcon = new cpp.FSlateIcon('EditorStyle', 'LevelEditor.WorldProperties', 'LevelEditor.WorldProperties.Small');
+    const comboEntry = Menus.InitComboButton('PTSExCombo', undefined, (subMenu) => {
+        if (!subMenu) return;
+        const item = Menus.InitMenuEntry('PTSExComboItem', 'Combo Item', 'Nested entry', () => {
+            console.log('[PTSEx] combo item clicked');
+        });
+        subMenu.AddMenuEntry('PTSExCombo', item);
+    }, 'PTSEx', 'PTSEx combo', comboIcon);
+    toolbar.AddMenuEntry('PTSEx', comboEntry);
+}
 
 // ---------------------------------------------------------------------------
 // Content browser context menus
@@ -242,6 +244,14 @@ Tabs.RegisterSlate('PTSExSlateTab', 'PTSEx Slate Tab', () => buildSlatePanel(), 
 Menus.AddEntry(subMenu, 'Scripts', Menus.InitMenuEntry('PTSExSlateTabOpen', 'Open Native Slate Tab', 'Opens the raw Slate nomad tab', () => {
     Tabs.Open('PTSExSlateTab');
 }));
+
+// ---------------------------------------------------------------------------
+// Project TypeScript editor tools (compiled from TypeScript/ -> Content/JavaScript)
+// ---------------------------------------------------------------------------
+// The env's loader falls back to Content/JavaScript, so project TS tools load
+// by their compiled path. See TypeScript/editor/test/TS_SlateTest.ts
+require('editor/test/TS_SlateTest');
+require('editor/test/TS_VisualDemo');
 
 // ---------------------------------------------------------------------------
 // World hooks

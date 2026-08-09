@@ -181,6 +181,32 @@ bool InvokeWithInt(const puerts::Function& InFunc, int32 InVal)
 	return true;
 }
 
+bool InvokeWithFloat(const puerts::Function& InFunc, float InVal)
+{
+	if (!InFunc.Isolate || InFunc.GObject.IsEmpty())
+	{
+		return false;
+	}
+
+	FTsCallScope Scope(InFunc);
+	v8::Isolate* Isolate = Scope.GetIsolate();
+	v8::Local<v8::Context> Ctx = Scope.GetContext();
+	v8::TryCatch TryCatch(Isolate);
+
+	v8::Local<v8::Value> Args[] = {
+		v8::Number::New(Isolate, InVal),
+	};
+
+	v8::Local<v8::Value> Result;
+	if (!Scope.GetFunction()->Call(Ctx, v8::Undefined(Isolate), 1, Args).ToLocal(&Result))
+	{
+		LogCaughtException(Isolate, &TryCatch);
+		return false;
+	}
+
+	return true;
+}
+
 bool InvokeWithString(const puerts::Function& InFunc, const FString& InStr)
 {
 	if (!InFunc.Isolate || InFunc.GObject.IsEmpty())
